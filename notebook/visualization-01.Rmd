@@ -1,0 +1,307 @@
+---
+title: "Visualization 01 - Introduction - Completed Version"
+author: "Yujie Su, M.S. & Matthew Schuelke, Ph.D."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output:
+  github_document: default
+  html_notebook: default
+---
+
+## Introduction
+
+Data visualization (dataviz) is an essential component of your skill set as a data scientist. Data visualization is statistics and design combined in meaningful and appropriate ways. On the one hand, dataviz is a form of graphical data analysis, emphasizing accurate representation and interpretation of data. On the other hand, dataviz relies on good design principles to not only make our plots attractive, but also meaningful and not misleading. The right visual representation will reveal hidden insights.
+
+## Load Dependencies
+
+The following code loads the package dependencies for our analysis:
+
+```{r package-load-1}
+library(dplyr)    # data wrangling
+library(ggplot2)  # data plotting
+library(readr)    # work with csv files
+library(cowplot)  # an add-on to ggplot2
+```
+
+Now you try loading an additional package - `here` (for working with file paths):
+
+```{r practice-1_load-here}
+
+```
+
+We have now loaded all of the packages needed for our analyses.
+
+## Load Data
+
+```{r load-data}
+houseWide <- read_csv(here('data', 'houseWide.csv'))
+```
+
+* The housing price related dataset was compiled by Dean De Cock for use in data science education, pulled from [Kaggle](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data). 
+
+## Explore Data
+
+```{r show-data}
+print(houseWide)
+```
+
+## Scatter plot
+
+Here we plot `SalePrice` against `LotArea`.
+
+```{r scatter-plot-example}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point()
+```
+
+## Statistics
+
+And here we add a linear model on top of the previous scatterplot.
+
+```{r statistics-example}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  stat_smooth(method = 'lm', col = 'red', se = FALSE)
+```
+
+## Anscombe's Quartet
+
+An example of the usefulness of data visualization as a data analysis tool is this classic example from Francis Anscombe, first published in 1973. Here, four different data sets can be described by the same linear model. If we relied solely on the numerical output without plotting our data, we'd have missed distinct and interesting underlying trends. 
+
+Dataset `anscombe` is included in base R, we can use that directly by the name.
+
+```{r anscombe-data}
+print(anscombe)
+```
+
+```{r anscombe-plot}
+p1 <- ggplot(anscombe, aes(x = x1, y = y1)) +
+  geom_point()+
+  geom_smooth(method = 'lm', se = FALSE, color = 'red', fullrange = TRUE) +
+  xlim(0,20) + ylim(0,14) +
+  coord_cartesian(xlim = c(0:20),ylim = c(0:14)) +
+  geom_text(x = 15, y = 2, label = 'y = 3.0001 + 0.5001 * X') +
+  theme_classic()
+
+p2 <- ggplot(anscombe, aes(x = x1, y = y2))+
+  geom_point() + 
+  geom_smooth(method = 'lm', se = FALSE, color = 'red', fullrange = TRUE) +
+  xlim(0,20) + ylim(0,14) +
+  geom_text(x = 15, y = 2, label = 'y = 3.0009 + 0.5000 * X') +
+  theme_classic()
+  
+p3 <- ggplot(anscombe, aes(x = x1, y = y3))+
+  geom_point() + 
+  stat_smooth(method = 'lm', se = FALSE, color = 'red', fullrange = TRUE) +
+  xlim(0,20) + ylim(0,14) +
+  geom_text(x = 15, y = 2, label = 'y = 3.0025 + 0.4997 * X') +
+  theme_classic()
+  
+p4 <- ggplot(anscombe, aes(x = x4, y = y4))+
+  geom_point() + 
+  stat_smooth(method = "lm", fullrange = TRUE, se = FALSE, color = 'red') +
+  xlim(0,20) + ylim(0,14) +
+  geom_text(x = 15, y = 2, label = 'y = 3.0017 + 0.4999 * X') +
+  theme_classic()
+
+plot_grid(p1, p2, p3, p4, labels = c('A', 'B', 'C', 'D'))
+```
+
+## Grammar of Graphics
+
+Although visualization is clearly based in statistics and graphical data analysis, it's a creative process that involves some amount of trial and error.
+
+In this part, we are going to explore data with many different perspectives. We'll also understand how the structure of our data helps us to make meaningful comparisons. We'll cover data visualization in detail from both theoretical and practical perspectives. The focus will be on the Grammar of Graphics as implemented by the ggplot2 package.
+
+Next let's explore the house data set step by step. The data set contains information of the property's sale price in dollars, above grade living area, lot area, ages, and property's structure style. 
+
+The first step in thinking creatively about data visualization is to appreciate that graphics are built upon an underlying grammar. There are two key things to note about the Grammar of Graphics.
+
+* Graphics are made up of distinct layers of grammatical elements.
+
+* Meaningful plots are built around appropriate aesthetic mappings.
+
+**Grammatical Elements**
+
+All plots are composed of:
+
+* Some **data** that you wish to visualise and a set of aesthetic **mapping**s describing how variables in the data are mapped to aesthetic attributes one could perceive.
+
+* The **layers** are made up of geometric elements and statistical transformations. Geometric objects (**geom**s) represent what you actually see. Statistical transformations (**stat**s) summarise data.
+
+* The **scale**s map values in the data space to values in the aesthetic space.
+
+* A coordinate system (**coord**) describes how data coordinates are mapped to the plane of the graphic.
+
+* A **facet**ing specification describes how to break up and display data in subsets.
+
+* A **theme** controls the finer points of display.
+
+The Grammar of Graphics established the building blocks for solid, creative, and meaningful data visualizations. This means we are not limited to specific, standard forms of expression because now we have a framework that allows us to communicate in a way that best suits our goal.
+
+## ggplot2 
+
+The grammar of graphics is implemented in R using the `ggplot2` package. 
+
+We construct plots by layering grammatical elements on top of each other and use aesthetic mappings to define our visualizations.
+
+**data**
+
+The first layer is data, we need some data to plot. The `houseWide` data set contains information of the property's sale price in dollars, above grade living area, lot area, ages, building years and property's structure style. 
+
+```{r houseWide-data}
+print(houseWide)
+```
+
+**mapping**
+
+The next step is aesthetics, which tells us which **scales** we should map our data onto. We establish a graphic mapping here.
+
+```{r houseWide-blank}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice))
+```
+
+Note that we do not see anything until we add another layer.
+
+```{r houseWide-scatter-plot}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point()
+```
+
+Now you plot the transpose of the above plot. That is, map `LotArea` to the y aesthetic and `SalePrice` to the x aesthetic.
+
+```{r practice-2_scatter-plot}
+
+```
+
+There are other available arguments in the aesthetics layer, like color and alpha.
+
+*color* 
+
+```{r houseWide-scatter-plot-with-color}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice, color = Style)) + 
+  geom_point()
+```
+
+*alpha*
+
+```{r houseWide-scatter-plot-with-alpha}
+ggplot(houseWide, aes(x = LotArea,y = SalePrice, alpha = Year)) + 
+  geom_point()
+```
+
+Now you use the `houseWide` dataset to to create a scatter plot of `SalePrice` as a function of `GrLivArea`, and use color to indicate different `Ages`.
+
+```{r practice-3_scatter-plot-with-color}
+
+```
+
+**geom**s
+
+The second layer allows us to choose the geometry.
+
+We have already use `geom_point()` to make a scatterplot. We could also construct histograms, boxplots, etc...
+
+Here is an example of a histogram describing the distribution of `SalePrice`.
+
+*geom_histogram*
+
+```{r SalePrice-histogram}
+ggplot(houseWide, aes(x = SalePrice)) + 
+  geom_histogram()
+```
+
+Now you try to create a histogram describing the distribution of `LotArea`.
+
+```{r practice-4_histogram}
+
+```
+
+**facet**s
+
+We could use the other layers to get a meaningful and cleaner visualization. 
+
+The next layer we'll use is facets, which dictates how to split up our plot. In this case we want to make three separate plots, one for each of the three styles.
+
+```{r facet-example}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  facet_grid(. ~ Style)
+```
+
+**stat**s
+
+The statistics layer can be used to calculate and add many different parameters. Here we've chosen to add a linear model to each of the three subplots.
+
+```{r stat-example}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  stat_smooth(method = 'lm', se = FALSE, col = 'red') + 
+  facet_grid(. ~ Style)
+```
+
+**scale**s
+
+We can also manipulate coordinates, which allows us to specify the precise dimensions the plot. Here we set the specific names of x axis and y axis.
+
+```{r scale-example}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  stat_smooth(method = 'lm', se = FALSE, col = 'red') +
+  scale_x_continuous(name = 'LotArea (square feet)') + 
+  scale_y_continuous(name = 'SalePrice (dollars)') + 
+  facet_grid(. ~ Style)
+```
+
+**theme**s
+
+Finally, the theme layer controls all the non-data ink on our plot, which allows us to get a nice looking, meaningful and publication quality plot directly in R. 
+
+*theme_excel*
+
+```{r theme-example-excel}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  stat_smooth(method = 'lm', se = FALSE, col = 'red') +
+  scale_x_continuous(name = 'LotArea (square feet)') + 
+  scale_y_continuous(name = 'SalePrice (dollars)') +
+  facet_grid(. ~ Style) + 
+  ggthemes::theme_excel()
+```
+
+Let's try tufte theme next
+
+*theme_tufte()*
+
+```{r theme-example-tufte}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  stat_smooth(method = 'lm', se = FALSE, col = 'red') +
+  scale_x_continuous(name = 'LotArea (square feet)') + 
+  scale_y_continuous(name = 'SalePrice (dollars)') + 
+  facet_grid(. ~ Style) + 
+  ggthemes::theme_tufte()
+```
+
+We could also set a customized theme manually. 
+
+```{r theme-example-manual}
+ggplot(houseWide, aes(x = LotArea, y = SalePrice)) + 
+  geom_point() + 
+  facet_grid(. ~ Style) + 
+  stat_smooth(method = 'lm', se = FALSE, col = 'red') +
+  labs(x = 'LotArea (square feet)', y = 'SalePrice (dollars)' ) + 
+  theme(panel.background = element_blank(),
+        plot.background = element_blank(),
+        legend.background = element_blank(),
+        strip.background = element_blank(),
+        legend.key = element_blank(),
+        axis.text = element_text(colour = 'black'),
+        axis.ticks = element_line(colour = 'black'),
+        axis.line = element_line(colour = 'black'))
+```
+
+Now you try to create a scatter plot of `SalePrice` as a function of `GrLivArea` and facet by `Ages`. Add a linear fitted line to each facet. Set appropriate x and y axis labels. Finally, add a manual theme.
+
+```{r practice-5_everything}
+
+```
