@@ -1,0 +1,70 @@
+---
+title: "Visualization 01 Challenge Complete"
+author: "Maya Gann-Bociek & Matthew Schuelke, Ph.D."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output:
+  github_document: default
+  html_notebook: default
+---
+
+## Introduction
+
+NHANES dataset is survey data collected by the US National Center for Health Statistics (NCHS) which has conducted a series of health and nutrition surveys since the early 1960's. It was included in NHANES package.
+
+Here we are going to plot Height against Age with Male and Female seperately.
+
+## Tasks
+
+1. Load the dependencies
+2. Load the dataset "nhanes_c1.csv" into your environment
+3. Explore the Data
+4. Plot the Data
+
+## Load Dependencies
+
+Load the following librarys:
+
+* ggplot2
+* readr 
+* here
+
+```{r package-load-1}
+library(ggplot2)  # data plotting
+library(readr)    # import csv files
+library(here)     # work with file paths
+```
+
+## Load Data
+
+Load in data "nhanes_c1.csv"
+
+```{r}
+nhanes <- read_csv(here('data', 'nhanes_c1.csv'))
+```
+
+## Explore the Data
+
+Print loaded dataset to explore your data
+
+```{r}
+print(nhanes)
+```
+
+## Plot the Data
+
+Try to:
+
+* create scatterplots of 'height' against 'ageMonths'
+* Split the plot to 2 facet: one female, one male
+* add losses line to each facet
+* set appropriate x and y labels
+* choose a theme for this plot
+ 
+```{r}
+ggplot(nhanes, aes(x = ageMonths, y = height)) + 
+  geom_point(size = 0.8,color = 'grey') + 
+  geom_smooth(color = "black") + 
+  facet_grid(. ~ gender) +
+  labs(x = "Age (Months)", y = "Height (cm)") +
+  theme_classic()
+```

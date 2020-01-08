@@ -1,5 +1,5 @@
 ---
-title: "Visualization 01 - Introduction - Completed Version"
+title: "Visualization 01 - Introduction"
 author: "Yujie Su, M.S. & Matthew Schuelke, Ph.D."
 date: '(`r format(Sys.time(), "%B %d, %Y")`)'
 output:
