@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Data Visualization in R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Christy Garcia, Chris Prener" />
+    <meta name="date" content="2019-09-04" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Data Visualization in <code>R</code>
+## Lesson 1: Grammar of Graphics
+### Christy Garcia, Chris Prener
+### September 4, 2019
+
+---
+
+
+# What We're All About
+
+We're in our **eigth semester** of offering seminars on using `R` for data science. 
+
+&lt;/br&gt;
+
+We were founded in **2015** by Christy Garcia, Chris Prener, and Kelly Lovejoy.
+
+&lt;/br&gt;
+
+We are a **collaborative, interdisciplinary** group at Saint Louis University focused on **building community** around open source software and open science.
+
+---
+
+# What We're All About
+
+We ❤️ `R`, RStudio, and the `tidyverse`!
+
+--
+
+&lt;/br&gt;
+
+Our seminars cover *most* of data science workflow from Wickham and Grollman (2016):
+
+&lt;img src="assets/workflow.png" width="689" /&gt;
+
+---
+
+# Upcoming Events
+
+### DSS 08: Data Visualization in `R`
+
+* Session 02 - Septemeber 18th
+* Session 03 - October 2nd
+* Session 04 - October 16th
+
+--
+
+### Other DSS Events
+
+* SLU Researchpalooza - September 11th/12th
+* Brownbag, Git and GitHub - September 12th
+* Brownbag, Open Science Framework - October 10th
+
+---
+
+# GitHub
+
+We host all of our materials on GitHub. If you want to get back to the lesson materials later, head to [https://github.com/slu-dss](https://github.com/slu-dss) and look for the `wrangling-01` repository (a special type of folder).
+
+&lt;img src="assets/github.png" width="1576" /&gt;
+
+---
+
+# Getting Started
+
+* You need to have `R` installed and **RStudio** open.
+
+* You need to have installed all of the necessary packages:
+
+```r
+install.packages(c("tidyverse", "cowplot", "here", "knitr", 
+"rmarkdown", "usethis"))
+```
+
+* You need to have downloaded and opened our lesson materials:
+
+```r
+usethis::use_course(
+"https://github.com/slu-dss/wrangling-01/archive/master.zip")
+```
+
+* RStudio should open a new window that says `wrangling-01` in the upper right hand corner.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

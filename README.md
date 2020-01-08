@@ -28,7 +28,15 @@ At the end of this lesson, participants should be able to:
 * [RStudio's `ggplot2` Cheat Sheet](https://www.rstudio.com/resources/cheatsheets/#ggplot2)
 * [`ggplot2` extensions gallery](http://www.ggplot2-exts.org/gallery/)
 
-## Access Lesson
+## Lesson Quick Start
+### Install Software
+The packages we'll need for today can be installed using:
+
+```r
+install.packages(c("tidyverse", "cowplot", "here", "knitr", "rmarkdown", "usethis"))
+```
+
+### Access Lesson
 You can download this lesson to your Desktop easily using `usethis`:
 
 ```r
